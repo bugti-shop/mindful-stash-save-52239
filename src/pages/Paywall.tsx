@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Check, Lock, Bell, Crown, ChevronLeft } from 'lucide-react';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { hapticFeedback } from '@/lib/haptics';
 
 type PricingPlan = 'monthly' | 'yearly';
 
@@ -26,7 +26,7 @@ export default function Paywall() {
   ];
 
   const handleStartTrial = async () => {
-    await Haptics.impact({ style: ImpactStyle.Heavy });
+    await hapticFeedback.heavy();
     if (selectedPlan === 'monthly') {
       await purchaseMonthly();
     } else {
@@ -37,7 +37,7 @@ export default function Paywall() {
   };
 
   const handlePlanSelect = async (plan: PricingPlan) => {
-    await Haptics.impact({ style: ImpactStyle.Light });
+    await hapticFeedback.light();
     setSelectedPlan(plan);
   };
 

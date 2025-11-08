@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Moon, Sun, Bell, Download, Upload, Trash2 } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Bell, Download, Upload, Trash2, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { BackupSync } from '@/components/BackupSync';
+import { useOnboarding } from '@/contexts/OnboardingContext';
 import { storage } from '@/lib/storage';
 import { useToast } from '@/hooks/use-toast';
+import { hapticFeedback } from '@/lib/haptics';
 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { resetOnboarding } = useOnboarding();
   const [darkMode, setDarkMode] = useState(false);
   const [currentTheme, setCurrentTheme] = useState('light');
 
@@ -40,17 +43,29 @@ const Settings = () => {
     root.classList.add(themeId);
   };
 
-  const handleClearData = () => {
+  const handleClearData = async () => {
     if (window.confirm('Are you sure you want to delete all your data? This action cannot be undone.')) {
+      await hapticFeedback.warning();
       storage.clearAll();
       toast({
         title: 'Data Cleared',
         description: 'All your data has been deleted.',
         variant: 'destructive',
       });
-      // Reload to reflect changes
       setTimeout(() => window.location.reload(), 1000);
     }
+  };
+
+  const handleResetOnboarding = async () => {
+    await hapticFeedback.medium();
+    resetOnboarding();
+    toast({
+      title: 'Tutorial Reset',
+      description: 'Redirecting to onboarding...',
+    });
+    setTimeout(() => {
+      navigate('/onboarding');
+    }, 500);
   };
 
   // Use semantic tokens from design system
@@ -129,6 +144,26 @@ const Settings = () => {
                 }} 
               />
             </div>
+          </div>
+        </Card>
+
+        {/* Tutorial */}
+        <Card className={`${cardBg} p-6 rounded-2xl shadow-lg`}>
+          <h2 className={`text-xl font-bold ${textColor} mb-4 flex items-center gap-2`}>
+            <RotateCcw size={24} />
+            Tutorial
+          </h2>
+          <div className="space-y-3">
+            <p className={textSecondary}>
+              Replay the app tutorial and onboarding experience.
+            </p>
+            <Button 
+              onClick={handleResetOnboarding}
+              variant="outline"
+              className="w-full"
+            >
+              Replay Tutorial
+            </Button>
           </div>
         </Card>
 

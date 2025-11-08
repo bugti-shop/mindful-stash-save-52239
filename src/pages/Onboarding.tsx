@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef, TouchEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Wallet, TrendingUp, Shield, Bell, ChartBar } from 'lucide-react';
 import { useOnboarding } from '@/contexts/OnboardingContext';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
+import { hapticFeedback } from '@/lib/haptics';
 import foldersImg from '@/assets/onboarding-folders.jpg';
 import analyticsImg from '@/assets/onboarding-analytics.jpg';
 import createImg from '@/assets/onboarding-create.jpg';
@@ -50,29 +50,76 @@ const slides = [
 
 export default function Onboarding() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
   const navigate = useNavigate();
   const { completeOnboarding } = useOnboarding();
 
   const handleNext = async () => {
-    await Haptics.impact({ style: ImpactStyle.Medium });
+    await hapticFeedback.medium();
     if (currentSlide < slides.length - 1) {
+      setSlideDirection('right');
       setCurrentSlide(currentSlide + 1);
     } else {
-      // Navigate to paywall after onboarding
       navigate('/paywall');
     }
   };
 
+  const handlePrevious = async () => {
+    await hapticFeedback.light();
+    if (currentSlide > 0) {
+      setSlideDirection('left');
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
+
   const handleSkip = async () => {
-    await Haptics.impact({ style: ImpactStyle.Light });
+    await hapticFeedback.light();
     navigate('/paywall');
+  };
+
+  // Swipe gesture handlers
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = async () => {
+    const swipeDistance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(swipeDistance) > minSwipeDistance) {
+      if (swipeDistance > 0 && currentSlide < slides.length - 1) {
+        // Swipe left - next slide
+        await hapticFeedback.light();
+        setSlideDirection('right');
+        setCurrentSlide(currentSlide + 1);
+      } else if (swipeDistance < 0 && currentSlide > 0) {
+        // Swipe right - previous slide
+        await hapticFeedback.light();
+        setSlideDirection('left');
+        setCurrentSlide(currentSlide - 1);
+      }
+    }
+
+    touchStartX.current = 0;
+    touchEndX.current = 0;
   };
 
   const slide = slides[currentSlide];
   const Icon = slide.icon;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div 
+      className="min-h-screen bg-background flex flex-col"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Header with Skip */}
       <div className="flex justify-between items-center p-6">
         <div className="w-20"></div>
@@ -100,15 +147,20 @@ export default function Onboarding() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-24">
+      {/* Content with slide animation */}
+      <div 
+        key={currentSlide}
+        className={`flex-1 flex flex-col items-center justify-center px-6 pb-24 ${
+          slideDirection === 'right' ? 'animate-slide-in-right' : 'animate-slide-in-left'
+        }`}
+      >
         {/* App Screenshot with Animation */}
-        <div className="w-full max-w-[280px] mb-8 animate-fade-in">
-          <div className="relative">
+        <div className="w-full max-w-[280px] mb-8">
+          <div className="relative animate-fade-in">
             <img 
               src={slide.image} 
               alt={slide.title}
-              className="w-full h-auto rounded-3xl shadow-2xl border-4 border-border animate-scale-in"
+              className="w-full h-auto rounded-3xl shadow-2xl border-4 border-border"
             />
             {/* Icon Overlay */}
             <div

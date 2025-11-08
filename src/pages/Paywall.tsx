@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Check, Lock, Bell, Crown, ChevronLeft } from 'lucide-react';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 type PricingPlan = 'monthly' | 'yearly';
 
@@ -25,6 +26,7 @@ export default function Paywall() {
   ];
 
   const handleStartTrial = async () => {
+    await Haptics.impact({ style: ImpactStyle.Heavy });
     if (selectedPlan === 'monthly') {
       await purchaseMonthly();
     } else {
@@ -32,6 +34,11 @@ export default function Paywall() {
     }
     completeOnboarding();
     navigate('/');
+  };
+
+  const handlePlanSelect = async (plan: PricingPlan) => {
+    await Haptics.impact({ style: ImpactStyle.Light });
+    setSelectedPlan(plan);
   };
 
   return (
@@ -100,7 +107,7 @@ export default function Paywall() {
         <div className="space-y-3 mb-6">
           {/* Monthly Plan */}
           <button
-            onClick={() => setSelectedPlan('monthly')}
+            onClick={() => handlePlanSelect('monthly')}
             className="w-full p-4 rounded-2xl border-2 transition-all text-left"
             style={{
               borderColor: selectedPlan === 'monthly' ? BRAND_COLOR : '#e0e0e0',
@@ -126,7 +133,7 @@ export default function Paywall() {
 
           {/* Yearly Plan */}
           <button
-            onClick={() => setSelectedPlan('yearly')}
+            onClick={() => handlePlanSelect('yearly')}
             className="w-full p-4 rounded-2xl border-2 transition-all text-left relative"
             style={{
               borderColor: selectedPlan === 'yearly' ? BRAND_COLOR : '#e0e0e0',

@@ -170,22 +170,32 @@ export default function Onboarding() {
             <button
               key={index}
               onClick={() => handleOptionSelect(option)}
-              className="w-full p-4 rounded-2xl border-2 transition-all text-left flex items-center justify-between"
+              className="w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left flex items-center justify-between group hover:scale-[1.02]"
               style={{
                 borderColor: selectedOptions[currentSlide] === option ? slide.color : '#e0e0e0',
-                backgroundColor: selectedOptions[currentSlide] === option ? `${slide.color}10` : 'transparent',
+                backgroundColor: selectedOptions[currentSlide] === option ? slide.color : 'transparent',
               }}
             >
-              <span className="text-foreground font-medium">{option}</span>
-              <div
-                className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+              <span 
+                className="font-medium transition-colors duration-300"
                 style={{
-                  borderColor: selectedOptions[currentSlide] === option ? slide.color : '#e0e0e0',
-                  backgroundColor: selectedOptions[currentSlide] === option ? slide.color : 'transparent',
+                  color: selectedOptions[currentSlide] === option ? '#ffffff' : 'hsl(var(--foreground))',
+                }}
+              >
+                {option}
+              </span>
+              <div
+                className="w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-300"
+                style={{
+                  borderColor: selectedOptions[currentSlide] === option ? '#ffffff' : '#e0e0e0',
+                  backgroundColor: selectedOptions[currentSlide] === option ? '#ffffff' : 'transparent',
                 }}
               >
                 {selectedOptions[currentSlide] === option && (
-                  <div className="w-2 h-2 rounded-full bg-white" />
+                  <div 
+                    className="w-3 h-3 rounded-full animate-scale-in"
+                    style={{ backgroundColor: slide.color }}
+                  />
                 )}
               </div>
             </button>

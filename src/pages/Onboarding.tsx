@@ -170,6 +170,9 @@ export default function Onboarding() {
             <button
               key={index}
               onClick={() => handleOptionSelect(option)}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
               className="w-full p-4 rounded-2xl border-2 transition-all duration-300 text-left flex items-center justify-between group hover:scale-[1.02]"
               style={{
                 borderColor: selectedOptions[currentSlide] === option ? slide.color : '#e0e0e0',

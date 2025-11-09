@@ -1,60 +1,58 @@
 import { useState, useRef, TouchEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Wallet, TrendingUp, Shield, Bell, ChartBar } from 'lucide-react';
+import { Wallet, TrendingUp, Users, Target, TrendingDown } from 'lucide-react';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import { hapticFeedback } from '@/lib/haptics';
-import foldersImg from '@/assets/onboarding-folders.jpg';
-import analyticsImg from '@/assets/onboarding-analytics.jpg';
-import createImg from '@/assets/onboarding-create.jpg';
-import recurringImg from '@/assets/onboarding-recurring.jpg';
-import investmentImg from '@/assets/onboarding-investment.jpg';
 
 const slides = [
   {
     icon: Wallet,
-    title: 'Organize Your Savings',
-    description: 'Create unlimited jars to organize your savings goals. Track each goal separately and watch your progress grow.',
+    title: 'What is your main savings goal?',
+    options: ['Emergency Fund', 'Vacation', 'New Car', 'Home Down Payment'],
     color: '#3c78f0',
-    image: foldersImg,
   },
   {
     icon: TrendingUp,
-    title: 'Track Your Progress',
-    description: 'Visual charts and insights help you understand your saving patterns. See exactly where your money goes.',
+    title: 'How much do you want to save monthly?',
+    options: ['$100 - $300', '$300 - $500', '$500 - $1000', 'More than $1000'],
     color: '#3c78f0',
-    image: analyticsImg,
   },
   {
-    icon: Shield,
-    title: 'Secure Backup & Sync',
-    description: 'Your data is automatically backed up and synced across all your devices. Never lose your financial records.',
+    icon: Users,
+    title: 'Are you saving alone or with others?',
+    options: ['Just me', 'With partner', 'With family', 'With friends'],
     color: '#3c78f0',
-    image: createImg,
   },
   {
-    icon: Bell,
-    title: 'Smart Reminders',
-    description: 'Set custom reminders for your savings goals. Stay on track with personalized notifications.',
+    icon: Target,
+    title: 'What is your biggest savings challenge?',
+    options: ['Staying consistent', 'Tracking expenses', 'Avoiding impulse buys', 'Setting realistic goals'],
     color: '#3c78f0',
-    image: recurringImg,
   },
   {
-    icon: ChartBar,
-    title: 'Advanced Analytics',
-    description: 'Get detailed insights into your savings trends. Make smarter financial decisions with data-driven analytics.',
+    icon: TrendingDown,
+    title: 'How often do you check your savings?',
+    options: ['Daily', 'Weekly', 'Monthly', 'Rarely'],
     color: '#3c78f0',
-    image: investmentImg,
   },
 ];
 
 export default function Onboarding() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(new Array(slides.length).fill(''));
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const navigate = useNavigate();
   const { completeOnboarding } = useOnboarding();
+
+  const handleOptionSelect = async (option: string) => {
+    await hapticFeedback.light();
+    const newSelectedOptions = [...selectedOptions];
+    newSelectedOptions[currentSlide] = option;
+    setSelectedOptions(newSelectedOptions);
+  };
 
   const handleNext = async () => {
     await hapticFeedback.medium();
@@ -115,19 +113,19 @@ export default function Onboarding() {
 
   return (
     <div 
-      className="min-h-screen bg-background flex flex-col"
+      className="h-screen bg-background flex flex-col overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       {/* Header with Skip */}
-      <div className="flex justify-between items-center p-6">
-        <div className="w-20"></div>
+      <div className="flex justify-between items-center p-4">
+        <div className="w-16"></div>
         {currentSlide < slides.length - 1 && (
           <Button
             variant="ghost"
             onClick={handleSkip}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground text-sm"
           >
             Skip
           </Button>
@@ -135,7 +133,7 @@ export default function Onboarding() {
       </div>
 
       {/* Progress Bar */}
-      <div className="px-6 mb-8">
+      <div className="px-6 mb-4">
         <div className="h-1 bg-muted rounded-full overflow-hidden">
           <div
             className="h-full transition-all duration-300 ease-in-out"
@@ -150,39 +148,53 @@ export default function Onboarding() {
       {/* Content with slide animation */}
       <div 
         key={currentSlide}
-        className={`flex-1 flex flex-col items-center justify-center px-6 pb-24 ${
+        className={`flex-1 flex flex-col items-center justify-center px-6 ${
           slideDirection === 'right' ? 'animate-slide-in-right' : 'animate-slide-in-left'
         }`}
       >
-        {/* App Screenshot with Animation */}
-        <div className="w-full max-w-[280px] mb-8">
-          <div className="relative animate-fade-in">
-            <img 
-              src={slide.image} 
-              alt={slide.title}
-              className="w-full h-auto rounded-3xl shadow-2xl border-4 border-border"
-            />
-            {/* Icon Overlay */}
-            <div
-              className="absolute -bottom-4 -right-4 w-20 h-20 rounded-full flex items-center justify-center shadow-xl animate-fade-in"
-              style={{ backgroundColor: slide.color }}
-            >
-              <Icon size={40} className="text-white" />
-            </div>
-          </div>
+        {/* Icon */}
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center mb-6 animate-fade-in"
+          style={{ backgroundColor: slide.color }}
+        >
+          <Icon size={32} className="text-white" />
         </div>
 
-        <h1 className="text-3xl font-bold text-center mb-4 text-foreground animate-fade-in">
+        <h1 className="text-2xl font-bold text-center mb-8 text-foreground animate-fade-in px-4">
           {slide.title}
         </h1>
 
-        <p className="text-center text-muted-foreground text-lg max-w-md leading-relaxed animate-fade-in">
-          {slide.description}
-        </p>
+        {/* Options */}
+        <div className="w-full max-w-md space-y-3 animate-fade-in">
+          {slide.options.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleOptionSelect(option)}
+              className="w-full p-4 rounded-2xl border-2 transition-all text-left flex items-center justify-between"
+              style={{
+                borderColor: selectedOptions[currentSlide] === option ? slide.color : '#e0e0e0',
+                backgroundColor: selectedOptions[currentSlide] === option ? `${slide.color}10` : 'transparent',
+              }}
+            >
+              <span className="text-foreground font-medium">{option}</span>
+              <div
+                className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0"
+                style={{
+                  borderColor: selectedOptions[currentSlide] === option ? slide.color : '#e0e0e0',
+                  backgroundColor: selectedOptions[currentSlide] === option ? slide.color : 'transparent',
+                }}
+              >
+                {selectedOptions[currentSlide] === option && (
+                  <div className="w-2 h-2 rounded-full bg-white" />
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Dot Indicators */}
-      <div className="flex justify-center gap-2 mb-6">
+      <div className="flex justify-center gap-2 mb-4">
         {slides.map((_, index) => (
           <div
             key={index}
@@ -196,10 +208,11 @@ export default function Onboarding() {
       </div>
 
       {/* Continue Button */}
-      <div className="px-6 pb-8">
+      <div className="px-6 pb-6">
         <Button
           onClick={handleNext}
-          className="w-full text-white text-lg font-semibold py-7 rounded-2xl transition-all"
+          disabled={!selectedOptions[currentSlide]}
+          className="w-full text-white text-base font-semibold py-6 rounded-2xl transition-all disabled:opacity-50"
           style={{ backgroundColor: slide.color }}
         >
           {currentSlide === slides.length - 1 ? 'Get Started' : 'Continue'}

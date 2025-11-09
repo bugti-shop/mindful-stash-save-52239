@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { storage } from '@/lib/storage';
 import { formatCurrency } from '@/lib/utils';
 import { checkAndProcessRecurringTransactions, checkUpcomingRecurringTransactions } from '@/lib/recurringTransactions';
+import { hapticFeedback } from '@/lib/haptics';
 import logoImg from '@/assets/logo.png';
 import { App as CapacitorApp } from '@capacitor/app';
 import { DndContext, closestCenter, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
@@ -276,8 +277,9 @@ const Index = () => {
     }
   };
 
-  const createJar = () => {
+  const createJar = async () => {
     if (newJar.name && newJar.target && categories.length > 0) {
+      await hapticFeedback.jarCreated();
       const targetAmount = parseFloat(newJar.target);
       const jar: Jar = {
         id: Date.now(),
@@ -408,15 +410,18 @@ const Index = () => {
     }
   };
 
-  const addMoney = () => {
+  const addMoney = async () => {
     if (!addAmount || !selectedJar) return;
     const amount = parseFloat(addAmount);
     const updatedJars = jars.map(jar => {
       if (jar.id === selectedJar.id) {
         const newSaved = Math.min(jar.saved + amount, jar.target);
         if (newSaved >= jar.target && jar.saved < jar.target) {
+          hapticFeedback.goalCompleted();
           setShowConfetti(true);
           setTimeout(() => setShowConfetti(false), 3000);
+        } else {
+          hapticFeedback.moneyAdded();
         }
         const newRecord: TransactionRecord = {
           id: Date.now(),
@@ -438,8 +443,9 @@ const Index = () => {
     setAddAmount('');
   };
 
-  const withdrawMoney = () => {
+  const withdrawMoney = async () => {
     if (!withdrawAmount || !selectedJar) return;
+    await hapticFeedback.moneyWithdrawn();
     const amount = parseFloat(withdrawAmount);
     const updatedJars = jars.map(jar => {
       if (jar.id === selectedJar.id) {

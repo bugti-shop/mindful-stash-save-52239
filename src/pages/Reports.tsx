@@ -158,8 +158,8 @@ const Reports = () => {
               onClick={() => setTimeRange(range)}
               className={`px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
                 timeRange === range
-                  ? 'bg-[#3c78f0] text-white'
-                  : `${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-700'} hover:bg-[#3c78f0]/10`
+                  ? 'bg-[#000000] text-white'
+                  : `${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-700'} hover:bg-[#000000]/10`
               }`}
             >
               {range === 'week' && 'Last Week'}

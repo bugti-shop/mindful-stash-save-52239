@@ -21,7 +21,7 @@ export const BottomNav = () => {
             className={({ isActive }) =>
               `flex flex-col items-center justify-center py-1.5 px-2 transition-all ${
                 isActive
-                  ? 'text-[#3c78f0]'
+                  ? 'text-[#000000] dark:text-white'
                   : 'text-muted-foreground'
               }`
             }
@@ -46,7 +46,7 @@ export const BottomNav = () => {
             className={({ isActive }) =>
               `flex flex-col items-center justify-center py-1.5 px-2 transition-all ${
                 isActive
-                  ? 'text-[#3c78f0]'
+                  ? 'text-[#000000] dark:text-white'
                   : 'text-muted-foreground'
               }`
             }
@@ -71,7 +71,7 @@ export const BottomNav = () => {
             className={({ isActive }) =>
               `flex flex-col items-center justify-center py-1.5 px-2 transition-all ${
                 isActive
-                  ? 'text-[#3c78f0]'
+                  ? 'text-[#000000] dark:text-white'
                   : 'text-muted-foreground'
               }`
             }
@@ -96,7 +96,7 @@ export const BottomNav = () => {
             className={({ isActive }) =>
               `flex flex-col items-center justify-center py-1.5 px-2 transition-all ${
                 isActive
-                  ? 'text-[#3c78f0]'
+                  ? 'text-[#000000] dark:text-white'
                   : 'text-muted-foreground'
               }`
             }

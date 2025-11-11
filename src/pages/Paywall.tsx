@@ -8,7 +8,7 @@ import { hapticFeedback } from '@/lib/haptics';
 
 type PricingPlan = 'monthly' | 'yearly';
 
-const BRAND_COLOR = '#3c78f0';
+const BRAND_COLOR = '#000000';
 
 export default function Paywall() {
   const [selectedPlan, setSelectedPlan] = useState<PricingPlan>('yearly');

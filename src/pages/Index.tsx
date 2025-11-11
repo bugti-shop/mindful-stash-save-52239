@@ -1253,7 +1253,7 @@ const Index = () => {
               className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none mb-4 resize-none ${
                 darkMode ? 'bg-gray-700 text-white' : ''
               }`}
-              style={{ borderColor: '#3c78f0', backgroundColor: noteColors[newNote.color].bg }}
+              style={{ borderColor: '#000000', backgroundColor: noteColors[newNote.color].bg }}
             />
             <div className="mb-6">
               <label className={`block text-sm font-semibold mb-3 ${textColor}`}>Choose Color</label>
@@ -1302,7 +1302,7 @@ const Index = () => {
               className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none mb-4 resize-none ${
                 darkMode ? 'bg-gray-700 text-white' : ''
               }`}
-              style={{ borderColor: '#3c78f0', backgroundColor: noteColors[newJarNote.color].bg }}
+              style={{ borderColor: '#000000', backgroundColor: noteColors[newJarNote.color].bg }}
             />
             <div className="mb-6">
               <label className={`block text-sm font-semibold mb-3 ${textColor}`}>Choose Color</label>

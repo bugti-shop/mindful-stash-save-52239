@@ -12,8 +12,8 @@ export const OnboardingProvider = ({ children }: { children: ReactNode }) => {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
   useEffect(() => {
-    const completed = localStorage.getItem('onboarding_completed') === 'true';
-    setHasCompletedOnboarding(completed);
+    // Onboarding disabled - always mark as completed
+    setHasCompletedOnboarding(true);
   }, []);
 
   const completeOnboarding = () => {

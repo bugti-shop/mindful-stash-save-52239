@@ -253,9 +253,9 @@ const Reports = () => {
               {savingsTargets.daysRemaining < 365 && ` in ${savingsTargets.daysRemaining} days`}
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              <div className={`${darkMode ? 'bg-gray-700/50' : 'bg-blue-50'} p-4 rounded-xl`}>
+              <div className={`${darkMode ? 'bg-gray-700/50' : 'bg-muted'} p-4 rounded-xl`}>
                 <p className={`text-xs ${textSecondary} mb-1`}>Daily</p>
-                <p className="text-base font-bold text-blue-600">
+                <p className="text-base font-bold text-black dark:text-white">
                   {currency}{formatCurrency(savingsTargets.daily)}
                 </p>
               </div>
@@ -323,7 +323,7 @@ const Reports = () => {
                     <div
                       className={`h-2 rounded-full ${
                         parseFloat(progress) >= 75 ? 'bg-green-600' :
-                        parseFloat(progress) >= 50 ? 'bg-blue-600' :
+                        parseFloat(progress) >= 50 ? 'bg-black dark:bg-white' :
                         parseFloat(progress) >= 25 ? 'bg-orange-600' : 'bg-red-600'
                       }`}
                       style={{ width: `${Math.min(parseFloat(progress), 100)}%` }}

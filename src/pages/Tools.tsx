@@ -168,9 +168,9 @@ const Tools = () => {
               Calculate EMI
             </Button>
             {emiResult !== null && (
-              <div className="mt-4 p-4 bg-blue-500/10 rounded-lg">
+              <div className="mt-4 p-4 bg-black/10 rounded-lg">
                 <p className="text-sm text-muted-foreground">Monthly EMI:</p>
-                <p className="text-2xl font-bold text-blue-600">
+                <p className="text-2xl font-bold text-black dark:text-white">
                   ${emiResult.toFixed(2)}
                 </p>
                 <p className="text-sm text-muted-foreground mt-1">

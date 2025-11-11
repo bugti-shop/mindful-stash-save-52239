@@ -506,7 +506,7 @@ const FolderDetail = () => {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-              <div className={`${darkMode ? 'bg-gray-700' : 'bg-blue-50'} rounded-xl sm:rounded-2xl p-3 sm:p-4`}>
+              <div className={`${darkMode ? 'bg-gray-700' : 'bg-muted'} rounded-xl sm:rounded-2xl p-3 sm:p-4`}>
                 <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
                   <span className={`text-xs sm:text-sm ${textSecondary}`}>Saved</span>
                 </div>
@@ -535,7 +535,7 @@ const FolderDetail = () => {
                       onChange={(e) => setWithdrawAmount(e.target.value)}
                       className={`w-[140px] px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base rounded-xl border-2 border-gray-300 focus:border-primary focus:outline-none ${darkMode ? 'bg-gray-700 text-white' : ''}`}
                     />
-                    <SavingsButton onClick={withdrawMoney} size="default" className="text-sm sm:text-base flex-1 whitespace-nowrap bg-blue-500 hover:bg-blue-600 text-white">
+                    <SavingsButton onClick={withdrawMoney} size="default" className="text-sm sm:text-base flex-1 whitespace-nowrap bg-black hover:bg-black/90 text-white">
                       Pay Off
                     </SavingsButton>
                   </div>

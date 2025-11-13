@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { BottomNav } from "@/components/BottomNav";
-import Welcome from "@/components/Welcome";
 import Index from "./pages/Index";
 import Reports from "./pages/Reports";
 import Pro from "./pages/Pro";
@@ -19,22 +17,6 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
-  const [showWelcome, setShowWelcome] = useState(false);
-
-  useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    setShowWelcome(!hasSeenWelcome);
-  }, []);
-
-  const handleGetStarted = () => {
-    localStorage.setItem('hasSeenWelcome', 'true');
-    setShowWelcome(false);
-  };
-
-  if (showWelcome) {
-    return <Welcome onGetStarted={handleGetStarted} />;
-  }
-
   return (
     <>
       <Routes>

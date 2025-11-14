@@ -45,6 +45,34 @@ export const NotificationSettings = () => {
       setPreferences(JSON.parse(saved));
     }
     requestPermissions();
+    
+    // Add listener for when notification is actually received/displayed
+    const addNotificationListener = async () => {
+      try {
+        await LocalNotifications.addListener('localNotificationReceived', async (notification) => {
+          // Trigger very strong vibration when notification is received
+          try {
+            await Haptics.impact({ style: ImpactStyle.Heavy });
+            setTimeout(async () => {
+              await Haptics.impact({ style: ImpactStyle.Heavy });
+            }, 100);
+            setTimeout(async () => {
+              await Haptics.impact({ style: ImpactStyle.Heavy });
+            }, 200);
+          } catch (e) {
+            console.log("Haptics not available");
+          }
+        });
+      } catch (error) {
+        console.log("Error adding notification listener:", error);
+      }
+    };
+    
+    addNotificationListener();
+    
+    return () => {
+      LocalNotifications.removeAllListeners();
+    };
   }, []);
 
   const requestPermissions = async () => {
@@ -112,6 +140,10 @@ export const NotificationSettings = () => {
       // Trigger strong vibration when notification is scheduled
       try {
         await Haptics.impact({ style: ImpactStyle.Heavy });
+        // Double vibration for extra strong feedback
+        setTimeout(async () => {
+          await Haptics.impact({ style: ImpactStyle.Heavy });
+        }, 100);
       } catch (e) {
         console.log("Haptics not available");
       }

@@ -81,7 +81,8 @@ const Index = () => {
   const [selectedJar, setSelectedJar] = useState<Jar | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [currentTheme, setCurrentTheme] = useState('light');
-  const [newJar, setNewJar] = useState({ name: '', target: '', currency: '€', categoryId: 0, targetDate: '', jarType: 'flask' as 'flask' | 'circular', imageUrl: '', purposeType: 'saving' as 'saving' | 'debt' });
+  const [newJar, setNewJar] = useState({ name: '', target: '', currency: '$', categoryId: 0, targetDate: '', jarType: 'flask' as 'flask' | 'circular', imageUrl: '', purposeType: 'saving' as 'saving' | 'debt' });
+  const [customCurrency, setCustomCurrency] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [newCategory, setNewCategory] = useState({ name: '', icon: '' });
@@ -1190,8 +1191,15 @@ const Index = () => {
                 <div className="mb-4">
                   <label className={`block text-sm font-medium mb-2 ${textColor}`}>Currency Symbol</label>
                   <select
-                    value={newJar.currency}
-                    onChange={(e) => setNewJar({ ...newJar, currency: e.target.value })}
+                    value={newJar.currency === customCurrency && customCurrency ? 'custom' : newJar.currency}
+                    onChange={(e) => {
+                      if (e.target.value === 'custom') {
+                        setNewJar({ ...newJar, currency: customCurrency || '$' });
+                      } else {
+                        setNewJar({ ...newJar, currency: e.target.value });
+                        setCustomCurrency('');
+                      }
+                    }}
                     className={`w-full px-4 py-3 rounded-xl border-2 border-primary focus:outline-none ${
                       darkMode ? 'bg-gray-700 text-white' : ''
                     }`}
@@ -1209,7 +1217,22 @@ const Index = () => {
                       <option value="CHF">CHF (Swiss Franc)</option>
                       <option value="CAD">CAD (Canadian Dollar)</option>
                       <option value="AUD">AUD (Australian Dollar)</option>
+                      <option value="custom">Custom Currency</option>
                     </select>
+                    {(newJar.currency === customCurrency || newJar.currency === 'custom') && (
+                      <input
+                        type="text"
+                        placeholder="Enter custom currency (e.g., BTC, PKR, etc.)"
+                        value={customCurrency}
+                        onChange={(e) => {
+                          setCustomCurrency(e.target.value);
+                          setNewJar({ ...newJar, currency: e.target.value });
+                        }}
+                        className={`w-full px-4 py-3 rounded-xl border-2 border-primary focus:outline-none mt-2 ${
+                          darkMode ? 'bg-gray-700 text-white' : ''
+                        }`}
+                      />
+                    )}
                 </div>
                 <div className="mb-4">
                   <label className={`block text-sm font-medium mb-2 ${textColor}`}>Target Date (Optional)</label>

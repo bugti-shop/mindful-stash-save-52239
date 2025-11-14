@@ -6,6 +6,9 @@ interface RecurringTransaction {
   frequency: 'daily' | 'weekly' | 'monthly';
   amount: number;
   nextDate: string;
+  time?: string; // HH:MM format
+  weekday?: number; // 0-6 (Sunday-Saturday)
+  monthDay?: number; // 1-31
 }
 
 interface Jar {
@@ -41,17 +44,36 @@ export const checkAndProcessRecurringTransactions = (): boolean => {
       };
       
       // Calculate next date
-      const getNextDate = (freq: string) => {
+      const getNextDate = (freq: string, transaction: RecurringTransaction) => {
         const next = new Date();
+        
+        // Set time if specified
+        if (transaction.time) {
+          const [hours, minutes] = transaction.time.split(':').map(Number);
+          next.setHours(hours, minutes, 0, 0);
+        }
+        
         switch (freq) {
           case 'daily':
             next.setDate(next.getDate() + 1);
             break;
           case 'weekly':
-            next.setDate(next.getDate() + 7);
+            // Set to next occurrence of the specified weekday
+            if (transaction.weekday !== undefined) {
+              const daysUntilNext = (transaction.weekday + 7 - next.getDay()) % 7 || 7;
+              next.setDate(next.getDate() + daysUntilNext);
+            } else {
+              next.setDate(next.getDate() + 7);
+            }
             break;
           case 'monthly':
-            next.setMonth(next.getMonth() + 1);
+            // Set to specified day of next month
+            if (transaction.monthDay !== undefined) {
+              next.setMonth(next.getMonth() + 1);
+              next.setDate(Math.min(transaction.monthDay, new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate()));
+            } else {
+              next.setMonth(next.getMonth() + 1);
+            }
             break;
         }
         return next.toISOString();
@@ -72,7 +94,7 @@ export const checkAndProcessRecurringTransactions = (): boolean => {
         records: [...(jar.records || []), newRecord],
         recurringTransaction: {
           ...jar.recurringTransaction,
-          nextDate: getNextDate(jar.recurringTransaction.frequency),
+          nextDate: getNextDate(jar.recurringTransaction.frequency, jar.recurringTransaction),
         },
       };
     }

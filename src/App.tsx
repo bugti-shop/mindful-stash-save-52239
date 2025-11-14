@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { WelcomeProvider, useWelcome } from "@/contexts/WelcomeContext";
 import { BottomNav } from "@/components/BottomNav";
-import Welcome from "@/components/Welcome";
+import OnboardingFlow from "@/components/OnboardingFlow";
 import Index from "./pages/Index";
 import Reports from "./pages/Reports";
 import Pro from "./pages/Pro";
@@ -22,7 +22,7 @@ const AppRoutes = () => {
   const { hasSeenWelcome, completeWelcome } = useWelcome();
 
   if (!hasSeenWelcome) {
-    return <Welcome onGetStarted={completeWelcome} />;
+    return <OnboardingFlow onComplete={completeWelcome} />;
   }
 
   return (

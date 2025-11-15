@@ -31,6 +31,49 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const [complete, setComplete] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [plan, setPlan] = useState('yearly');
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+
+  // Preload all images for fast rendering
+  useEffect(() => {
+    const imagesToPreload = [
+      infoHome,
+      infoNotes,
+      infoFolders,
+      infoJar,
+      infoTransactions,
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Tiktok_icon.svg/2048px-Tiktok_icon.svg.png',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/2880px-Google_2015_logo.svg.png',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/2048px-YouTube_social_white_squircle_%282017%29.svg.png',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Android_robot.svg/1745px-Android_robot.svg.png',
+    ];
+
+    let loadedCount = 0;
+    const totalImages = imagesToPreload.length;
+
+    imagesToPreload.forEach((src) => {
+      const img = new Image();
+      img.onload = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true);
+        }
+      };
+      img.onerror = () => {
+        loadedCount++;
+        if (loadedCount === totalImages) {
+          setImagesLoaded(true);
+        }
+      };
+      img.src = src;
+    });
+
+    // Fallback timeout
+    const timeout = setTimeout(() => {
+      setImagesLoaded(true);
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   const goals = [
     { id: 'lose', label: 'Saving Money', icon: PiggyBank },
@@ -352,7 +395,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               className="relative"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-transparent rounded-3xl blur-2xl opacity-50"></div>
-              <img src={infoHome} alt="Progress tracking" loading="eager" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
+              <img src={infoHome} alt="Progress tracking" loading="eager" decoding="async" fetchPriority="high" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
             </motion.div>
             <p className="text-gray-600 text-base mb-2 font-medium">Visualize your savings journey with beautiful charts</p>
             <p className="text-gray-500 text-sm">Monitor your goals in real-time and stay motivated</p>
@@ -400,7 +443,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               className="relative"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-transparent rounded-3xl blur-2xl opacity-50"></div>
-              <img src={infoJar} alt="Jar savings" loading="eager" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
+              <img src={infoJar} alt="Jar savings" loading="eager" decoding="async" fetchPriority="high" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
             </motion.div>
             <p className="text-gray-600 text-base mb-2 font-medium">Create multiple savings jars for different goals</p>
             <p className="text-gray-500 text-sm">Track wedding funds, vacation savings, and more separately</p>
@@ -474,7 +517,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               className="relative"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-transparent rounded-3xl blur-2xl opacity-50"></div>
-              <img src={infoFolders} alt="Smart folders" loading="eager" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
+              <img src={infoFolders} alt="Smart folders" loading="eager" decoding="async" fetchPriority="high" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
             </motion.div>
             <p className="text-gray-600 text-base mb-2 font-medium">Keep all your financial goals organized in one place</p>
             <p className="text-gray-500 text-sm">Create custom categories for different savings goals</p>
@@ -574,7 +617,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               className="relative"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-transparent rounded-3xl blur-2xl opacity-50"></div>
-              <img src={infoNotes} alt="Notes feature" loading="eager" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
+              <img src={infoNotes} alt="Notes feature" loading="eager" decoding="async" fetchPriority="high" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
             </motion.div>
             <p className="text-gray-600 text-base mb-2 font-medium">Add personal reminders and financial notes</p>
             <p className="text-gray-500 text-sm">Keep track of important money decisions and insights</p>
@@ -595,7 +638,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                     source === s.name ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-800 border-gray-100'
                   }`}
                 >
-                  <img src={s.logo} alt={s.name} className="w-6 h-6" style={{ filter: 'none' }} />
+                  <img src={s.logo} alt={s.name} loading="eager" decoding="async" className="w-6 h-6" style={{ filter: 'none' }} />
                   <span className="text-base font-medium" style={{ color: source === s.name ? '#fff' : s.color }}>{s.name}</span>
                 </button>
               ))}
@@ -618,7 +661,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               className="relative"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-transparent rounded-3xl blur-2xl opacity-50"></div>
-              <img src={infoTransactions} alt="Transaction records" loading="eager" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
+              <img src={infoTransactions} alt="Transaction records" loading="eager" decoding="async" fetchPriority="high" className="w-[430px] h-[430px] object-contain mb-6 relative z-10" />
             </motion.div>
             <p className="text-gray-600 text-base mb-2 font-medium">Never lose track of your money flow</p>
             <p className="text-gray-500 text-sm">Detailed records of every deposit and withdrawal</p>
